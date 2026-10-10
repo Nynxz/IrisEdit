@@ -1,0 +1,35 @@
+# The same mix at Iris's native 1024px, for stage 2 (configs/generalist_1024.yaml).
+size: 1024
+sources:
+- repo: osunlp/MagicBrush
+  split: train
+  src: source_img
+  tgt: target_img
+  instr: instruction
+  count: 8000
+  prefix: magicbrush
+- repo: TIGER-Lab/OmniEdit-Filtered-1.2M
+  split: train
+  src: src_img
+  tgt: edited_img
+  instr: edited_prompt_list
+  count: 8000
+  score_field: o_score
+  min_score: 8.0
+  prefix: omniedit
+- repo: iitolstykh/NHR-Edit
+  split: train
+  src: source_image
+  tgt: edited_image
+  instr: edit_instruction
+  count: 8000
+  balance_field: category
+  max_per_type: 400
+  prefix: nhr
+- repo: UCSC-VLAA/HQ-Edit
+  split: train
+  src: input_image
+  tgt: output_image
+  instr: edit
+  count: 8000
+  prefix: hqedit

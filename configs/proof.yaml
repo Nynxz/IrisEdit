@@ -1,0 +1,9 @@
+# Proof run: does the in-context edit LoRA work on Iris at all? ~2.8k pairs, 1500 steps
+# at 768px, previews on held-out images every 250 steps.
+extends: _base
+cache_dir: data/cache_main
+out_dir: out/proof
+max_steps: 1500
+warmup_steps: 100
+save_every: 250
+log_every: 25

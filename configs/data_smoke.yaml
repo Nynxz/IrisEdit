@@ -1,0 +1,35 @@
+# 100 rows from each source of configs/data.yaml, to validate the pipeline.
+size: 768
+sources:
+- repo: osunlp/MagicBrush
+  split: train
+  src: source_img
+  tgt: target_img
+  instr: instruction
+  count: 100
+  prefix: magicbrush
+- repo: TIGER-Lab/OmniEdit-Filtered-1.2M
+  split: train
+  src: src_img
+  tgt: edited_img
+  instr: edited_prompt_list
+  count: 100
+  score_field: o_score
+  min_score: 8.0
+  prefix: omniedit
+- repo: iitolstykh/NHR-Edit
+  split: train
+  src: source_image
+  tgt: edited_image
+  instr: edit_instruction
+  count: 100
+  balance_field: category
+  max_per_type: 400
+  prefix: nhr
+- repo: UCSC-VLAA/HQ-Edit
+  split: train
+  src: input_image
+  tgt: output_image
+  instr: edit
+  count: 100
+  prefix: hqedit

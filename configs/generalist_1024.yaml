@@ -1,0 +1,10 @@
+# Stage 2: continue the 768 generalist at Iris's native 1024px. Needs a 1024 cache
+# (`irisedit cache data_1024`) and bootstraps from the stage-1 adapter.
+extends: _base
+cache_dir: data/cache_1024
+out_dir: out/generalist_1024
+bootstrap_lora: out/generalist/last.safetensors
+flow_shift: 4.0
+lr: 5.0e-5
+max_steps: 4000
+preview_side: 1024

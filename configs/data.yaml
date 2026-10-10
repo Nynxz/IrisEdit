@@ -1,0 +1,62 @@
+# Dataset mix for the generalist (NK2E's sources). `irisedit cache data` streams each
+# source into data/cache_main as resized image pairs.
+#
+# 768px, not 512: the released Iris-3B checkpoint was fine-tuned at ~1MP and produces
+# patch-grid artifacts below ~768. UltraEdit is left out because it is 512px only
+# (upscaling it would teach soft targets); every source below is ~1MP natively.
+size: 768
+sources:
+  # Human-annotated, real images: strong preservation + instruction-following.
+  - repo: osunlp/MagicBrush
+    split: train
+    src: source_img
+    tgt: target_img
+    instr: instruction
+    count: 8807 # the whole train split
+    prefix: magicbrush
+
+  # Diversity workhorse: 7 skills (add/remove/swap/attr/background/env/style),
+  # high-res, VIEScore-filtered. Keep only high overall-quality rows.
+  - repo: TIGER-Lab/OmniEdit-Filtered-1.2M
+    split: train
+    src: src_img
+    tgt: edited_img
+    instr: edited_prompt_list      # list -> first non-empty
+    count: 19197 # resuming deeper re-downloads and leaks memory in the skip; stopped here
+    score_field: o_score
+    min_score: 8.0
+    interleave: 16 # sorted by task (add, remove, swap, attr, env, style); mix 16 evenly spaced shards
+    prefix: omnimix
+
+  # Human-written instructions over mined before/after pairs (358k rows,
+  # Apache-2.0). Replaced the old instructpix2pix slice, whose pairs are
+  # SD-generated and visibly weaker than everything else here.
+  #
+  # The category cap is doing real work: NHR has 257 classes, but add-object /
+  # remove-object variants are roughly 82% of the dataset. Uncapped they would
+  # dominate the whole mix and the long tail would never get cached. Expect this
+  # source to stream several times `count` rows before it fills -- rejected rows
+  # are cheap (never decoded), but they are still downloaded.
+  #
+  # Not filtering on `style` on purpose: NHR carries 87 styles including
+  # illustration/painting/anime, and a generalist should handle those. That list
+  # is worth having for picking legible PREVIEW rows, not for excluding training
+  # data. Raise max_per_type if the source is streaming too long to fill.
+  - repo: iitolstykh/NHR-Edit
+    split: train
+    src: source_image
+    tgt: edited_image
+    instr: edit_instruction
+    count: 6600 # the category cap makes the last stretch very slow
+    balance_field: category
+    max_per_type: 400
+    prefix: nhr
+
+  # GPT-4V-generated, high aesthetic quality + diverse edit intents.
+  - repo: UCSC-VLAA/HQ-Edit
+    split: train
+    src: input_image
+    tgt: output_image
+    instr: edit
+    count: 13000
+    prefix: hqedit

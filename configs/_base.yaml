@@ -1,0 +1,51 @@
+# Shared defaults. A run config says `extends: _base` and only what differs.
+
+# backbone (override paths in irisedit.toml or $IRISEDIT_CHECKPOINT / $IRISEDIT_TEXT_ENCODER)
+checkpoint: hf:speridlabs/iris-3b/model.safetensors
+text_encoder: Qwen/Qwen3-VL-4B-Instruct
+frame_pairs: 2 # slowest RoPE pairs used to tag the reference image
+grad_checkpointing: true
+
+# adapter: every linear in the patch trunk (both streams of the dual blocks), the
+# text refiner (repurposed from "describe" to "edit") and the pixel decoder, which
+# never sees the reference directly and has to rebuild detail from the trunk tokens
+lora_scopes: [blocks, y_embedder.refiner, pixel_blocks]
+lora_targets: [
+    attn.q_proj_x, attn.k_proj_x, attn.v_proj_x, attn.proj_x, attn_gate_x, mlp_x.w1, mlp_x.w2, mlp_x.w3,
+    attn.q_proj_y, attn.k_proj_y, attn.v_proj_y, attn.proj_y, attn_gate_y, mlp_y.w1, mlp_y.w2, mlp_y.w3,
+    q_proj, k_proj, v_proj, attn_gate, attn_proj, mlp.w1, mlp.w2, mlp.w3,
+    attn.qkv, attn.proj,
+    adaln, compress, expand, mlp.fc1, mlp.fc2,
+  ]
+lora_rank: 64
+lora_alpha: 64
+lora_dropout: 0.0
+
+# optimisation
+batch_size: 1
+grad_accum: 4
+num_workers: 4
+lr: 1.0e-4
+min_lr: 1.0e-5
+weight_decay: 0.0
+lr_schedule: cosine
+warmup_steps: 200
+max_grad_norm: 1.0
+seed: 0
+
+# flow objective (Iris trained at shift 3 for 512px and 4 for 1024px; 768 sits between)
+flow_shift: 3.5
+t_logitnorm_mean: 0.0
+t_logitnorm_std: 1.0
+prompt_dropout: 0.1 # empty caption = Iris's CFG null
+
+# previews: every checkpoint renders these edits to out_dir/samples/
+preview_manifest: examples/preview.jsonl
+preview_count: 4
+preview_side: 768
+preview_steps: 30
+preview_cfg: 3.0
+preview_seed: 0
+
+log_every: 50
+save_every: 1000

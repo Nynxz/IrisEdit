@@ -1,0 +1,22 @@
+# Generalist v3: fixes the reason v1/v2 "redrew" scenes. Probing one-step predictions on
+# training pairs showed the model nails the target at sigma <= 0.95 but collapses at pure
+# noise (11-14 dB at sigma 1.0 vs 21.8 dB for just copying the source): in pixel space the
+# layout leaks through x_t, and Iris's schedule almost never samples sigma > 0.98, so the
+# model learned to read the layout from x_t instead of the reference. Sampling starts from
+# pure noise, so the layout got invented. v3 draws 30% of samples from sigma in [0.97, 1].
+# Starts from the first run's step 4000 (best predictions at every sigma).
+extends: _base
+cache_dir: data/cache_main
+min_alignment: 0.4
+edit_loss_weight: 1.0
+t_high_frac: 0.3
+t_high_min: 0.97
+bootstrap_lora: out/generalist/step4000.safetensors
+out_dir: out/generalist_v3
+lr: 5.0e-5
+min_lr: 5.0e-6
+warmup_steps: 100
+max_steps: 6000
+save_every: 500
+preview_every: 1000
+preview_cfg: 2.0

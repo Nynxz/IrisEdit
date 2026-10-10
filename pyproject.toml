@@ -1,0 +1,40 @@
+[project]
+name = "irisedit"
+version = "0.1.0"
+description = "Train Iris-3B into an instruction image editor with an in-context edit LoRA."
+requires-python = ">=3.11,<3.13"
+dependencies = [
+    "torch>=2.7.1",
+    "transformers>=4.57.1",
+    "safetensors>=0.4",
+    "huggingface-hub>=0.34",
+    "omegaconf>=2.3",
+    "pyyaml>=6.0",
+    "click>=8.1",
+    "pillow>=10.0",
+    "numpy>=1.26",
+    "datasets>=3.0",
+]
+
+[project.scripts]
+irisedit = "irisedit.cli:cli"
+
+[build-system]
+requires = ["setuptools>=70"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["irisedit"]
+
+[tool.uv.sources]
+torch = { index = "pytorch-cu128" }
+
+[[tool.uv.index]]
+name = "pytorch-cu128"
+url = "https://download.pytorch.org/whl/cu128"
+explicit = true
+
+[tool.ruff]
+line-length = 110
+target-version = "py311"
+extend-exclude = ["vendor"]

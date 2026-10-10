@@ -1,0 +1,14 @@
+# Generalist editor, stage 1 at 768px on the full mix (configs/data.yaml).
+#
+# min_alignment drops pairs whose target does not keep the source's composition (edge
+# correlation of thumbnails, see irisedit/align.py): HQ-Edit's before/after images are
+# generated separately and score ~0, and training on them teaches the model to redraw the
+# scene. edit_loss_weight upweights the pixels an edit changes, so sparse edits (MagicBrush,
+# NHR: ~10% of the image) are not drowned out by reproducing the source. Both were turned on
+# at step 3028 after the previews see-sawed between copying and redrawing.
+extends: _base
+cache_dir: data/cache_main
+min_alignment: 0.4
+edit_loss_weight: 4.0
+out_dir: out/generalist
+max_steps: 12000

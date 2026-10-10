@@ -1,0 +1,6 @@
+IrisEdit
+Copyright 2026 Nynxz
+
+Includes the Iris-3B model code (vendor/iris3b), Copyright 2026 Speridlabs,
+Apache License 2.0: https://github.com/speridlabs/iris-3b
+Iris-3B weights: https://huggingface.co/speridlabs/iris-3b (Apache License 2.0).

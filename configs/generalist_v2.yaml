@@ -1,0 +1,17 @@
+# Generalist v2: restart from the generalist's step-1000 adapter, the last checkpoint that
+# kept the source's composition at every CFG. From step ~2000 the first run drifted into
+# redrawing the scene (HQ-Edit's unaligned pairs, then edit_loss_weight 4 starving the
+# unchanged pixels), so v2 trains on aligned pairs only, with a mild edit weighting that keeps
+# unchanged pixels at >= ~0.5 weight, at half the learning rate. Previews at CFG 2 (NK2E's
+# sweet spot; 3 over-edits).
+extends: _base
+cache_dir: data/cache_main
+min_alignment: 0.4
+edit_loss_weight: 1.0
+bootstrap_lora: out/generalist/step1000.safetensors
+out_dir: out/generalist_v2
+lr: 5.0e-5
+min_lr: 5.0e-6
+warmup_steps: 100
+max_steps: 8000
+preview_cfg: 2.0

@@ -1,0 +1,10 @@
+# Short run on the smoke cache to validate the pipeline. Same adapter as the real run.
+extends: _base
+cache_dir: data/cache_smoke
+out_dir: out/smoke
+max_steps: 100
+warmup_steps: 10
+log_every: 10
+save_every: 50
+preview_count: 2
+preview_steps: 20
